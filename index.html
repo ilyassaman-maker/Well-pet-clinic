@@ -272,8 +272,20 @@ function render(){
  if(!list.length){
    rows.innerHTML='<tr><td colspan="6" style="text-align:center;padding:28px;color:#7d8794">'+(q?'ไม่พบรายการที่ค้นหา':'ยังไม่มีรายการนัดหมาย')+'</td></tr>';return;
  }
- rows.innerHTML=list.map(x=>`<tr>
- <td>${escapeHtml(x.date)}</td><td>${escapeHtml(x.time)}</td><td><b>${escapeHtml(x.pet)}</b><br><small>${escapeHtml(x.record||'')}</small></td>
+ rows.innerHTML=list.map(x=>{
+const d=new Date(x.date+'T00:00:00');
+const today=new Date();
+today.setHours(0,0,0,0);
+const diff=Math.round((d-today)/86400000);
+
+let label='';
+if(diff<0) label='⚠️ เลยนัดแล้ว';
+else if(diff===0) label='🔴 วันนี้';
+else if(diff===1) label='🟠 พรุ่งนี้ — ต้องโทร';
+else label=`🟡 อีก ${diff} วัน`;
+
+return `<tr>  
+ <td>${escapeHtml(x.date)}<br><b>${label}</b></td>
  <td>${escapeHtml(x.owner||'-')}<br><small>${escapeHtml(x.phone||'')}</small></td>
  <td>${x.items?.length?x.items.map(i=>`<span class="badge">${escapeHtml(i)}</span> `).join(''):'-'}</td>
  <td style="white-space:nowrap">
