@@ -152,7 +152,7 @@ function openDB(){
   req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains(STORE))db.createObjectStore(STORE,{keyPath:'id'});};
   req.onsuccess=()=>resolve(req.result);
   req.onerror=()=>reject(req.error);
- });
+}catch(e){ alert('โหลดข้อมูลไม่สำเร็จ: '+e.message); appointments=[]; }
 }
 async function loadAppointments(){
  try{
